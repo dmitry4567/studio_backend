@@ -51,10 +51,12 @@ export class AuthService {
     const tokenFromDb = await this.tokenService.findToken(dto.refresh_token);
 
     if (!userData || !tokenFromDb) {
-      throw new UnauthorizedException('error');
+      throw new UnauthorizedException();
     }
 
     const user = await this.usersService.findById(userData.id);
+
+    await this.tokenService.deleteToken(user);
 
     const tokens = await this.tokenService.generateToken({ ...user });
     await this.tokenService.saveToken(user, tokens.refresh_token);
