@@ -56,14 +56,46 @@ export class UserService {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findById(id: number) {
+    return this.userRepository.findOne({
+      where: { id },
+      select: [
+        'id',
+        'email',
+        'role',
+        'studio_session_admins',
+        'studio_session_clients',
+      ],
+    });
   }
 
-  async findById(id: number) {
-    return this.userRepository.findOneBy({
-      id,
-    });
+  async getAllUsers() {
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.studio_session_admins', 'studio_session_admins')
+      .leftJoinAndSelect(
+        'user.studio_session_clients',
+        'studio_session_clients',
+      )
+      .select([
+        'user.id',
+        'user.email',
+        'user.createAt',
+        'user.updateAt',
+        'studio_session_admins.id',
+        'studio_session_clients.id',
+      ])
+      .getMany();
+
+    return users.map((user) => ({
+      ...user,
+      studio_session_admins: user.studio_session_admins.map((admin) => ({
+        id: admin.id,
+      })),
+      studio_session_clients: user.studio_session_clients.map((client) => ({
+        id: client.id,
+      })),
+    }));
   }
 
   async remove(req: any): Promise<DeleteResult> {
