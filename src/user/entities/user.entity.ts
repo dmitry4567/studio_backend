@@ -1,11 +1,13 @@
 import { Role } from 'src/role/entities/role.entity';
+import { TokenEntity } from 'src/token/entities/token.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('user')
@@ -22,9 +24,9 @@ export class UserEnitity {
   @ManyToOne(() => Role, (role) => role.user)
   role: Role;
 
+  @OneToMany(() => TokenEntity, (token) => token.user)
+  token: TokenEntity;
+
   @CreateDateColumn()
   createAt: Date;
-
-  @UpdateDateColumn()
-  updateAt: Date;
 }

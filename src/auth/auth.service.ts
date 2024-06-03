@@ -5,43 +5,62 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserEnitity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
+import { TokenService } from 'src/token/token.service';
+import { RefreshTokenDto } from 'src/user/dto/refresh-token-dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
+    private tokenService: TokenService,
+    private configService: ConfigService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async login(email: string, password: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
     if (!user) throw new BadRequestException('Пользователя с таким email нет');
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) throw new UnauthorizedException();
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Неверный логин или пароль');
 
-    if (user && isPasswordValid) {
-      const { password, ...result } = user;
-      return result;
-    }
+    await this.tokenService.deleteToken(user);
 
-    return null;
+    const tokens = await this.tokenService.generateToken({ ...user });
+    await this.tokenService.saveToken(user, tokens.refresh_token);
+
+    return tokens;
   }
 
   async register(dto: CreateUserDto) {
-    const userData = await this.usersService.create(dto);
+    const user = await this.usersService.create(dto);
 
-    return {
-      token: this.jwtService.sign({ id: userData.id, role: userData.role }),
-    };
+    const tokens = await this.tokenService.generateToken(user);
+    await this.tokenService.saveToken(user, tokens.refresh_token);
+
+    return tokens;
   }
 
-  async login(user: UserEnitity) {
-    return {
-      token: this.jwtService.sign({ id: user.id, role: user.role }),
-    };
+  async refresh(dto: RefreshTokenDto) {
+    const userData = await this.tokenService.validateToken(dto.refresh_token);
+
+    const tokenFromDb = await this.tokenService.findToken(dto.refresh_token);
+
+    if (!userData || !tokenFromDb) {
+      throw new UnauthorizedException();
+    }
+
+    const user = await this.usersService.findById(userData.id);
+
+    await this.tokenService.deleteToken(user);
+
+    const tokens = await this.tokenService.generateToken({ ...user });
+    await this.tokenService.saveToken(user, tokens.refresh_token);
+
+    return tokens;
   }
 }
