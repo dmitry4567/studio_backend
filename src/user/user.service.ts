@@ -56,6 +56,14 @@ export class UserService {
     return user;
   }
 
+  async getUser(user) {
+    return user;
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${id} user`;
+  }
+
   async findById(id: number) {
     return this.userRepository.findOne({
       where: { id },

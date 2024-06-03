@@ -1,14 +1,15 @@
 import { ApiHideProperty } from '@nestjs/swagger';
 import { Role } from 'src/role/entities/role.entity';
 import { StudioSessionEntity } from 'src/studio_sessions/entities/studio_session.entity';
+import { TokenEntity } from 'src/token/entities/token.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('user')
@@ -38,10 +39,10 @@ export class UserEnitity {
     (studio_session) => studio_session.user_client,
   )
   studio_session_clients: StudioSessionEntity[];
+  
+  @OneToMany(() => TokenEntity, (token) => token.user)
+  token: TokenEntity;
 
   @CreateDateColumn()
   createAt: Date;
-
-  @UpdateDateColumn()
-  updateAt: Date;
 }
