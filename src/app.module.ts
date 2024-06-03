@@ -5,6 +5,7 @@ import { getPostgresConfig } from './config/postgres.config';
 import { RoleModule } from './role/role.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { StudioSessionsModule } from './studio_sessions/studio_sessions.module';
 import { TokenModule } from './token/token.module';
 
 @Module({
@@ -21,6 +22,7 @@ import { TokenModule } from './token/token.module';
     UserModule,
     AuthModule,
     RoleModule,
+    StudioSessionsModule,
     TokenModule,
   ],
   controllers: [],

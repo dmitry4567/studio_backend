@@ -18,6 +18,22 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guards';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.userService.create(createUserDto);
+  // }
+  
+  // @Get()
+  // async getAllUsers() {
+  //   return this.userService.getAllUsers();
+  // }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Delete()
+  // delete(@Request() req: any): Promise<DeleteResult> {
+  //   return this.userService.remove(req);
+  // }
+  
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get('/info')

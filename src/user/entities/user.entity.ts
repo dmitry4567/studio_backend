@@ -1,4 +1,6 @@
+import { ApiHideProperty } from '@nestjs/swagger';
 import { Role } from 'src/role/entities/role.entity';
+import { StudioSessionEntity } from 'src/studio_sessions/entities/studio_session.entity';
 import { TokenEntity } from 'src/token/entities/token.entity';
 import {
   Column,
@@ -24,6 +26,20 @@ export class UserEnitity {
   @ManyToOne(() => Role, (role) => role.user)
   role: Role;
 
+  @ApiHideProperty()
+  @OneToMany(
+    () => StudioSessionEntity,
+    (studio_session) => studio_session.user_admin,
+  )
+  studio_session_admins: StudioSessionEntity[];
+
+  @ApiHideProperty()
+  @OneToMany(
+    () => StudioSessionEntity,
+    (studio_session) => studio_session.user_client,
+  )
+  studio_session_clients: StudioSessionEntity[];
+  
   @OneToMany(() => TokenEntity, (token) => token.user)
   token: TokenEntity;
 
