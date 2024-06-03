@@ -43,6 +43,23 @@ export class UserService {
     return user;
   }
 
+  async findOrCreate(user: any) {
+    const existingUser = await this.userRepository.findOneBy({
+      email: user.googleId,
+    });
+
+    if (existingUser) {
+      return existingUser;
+    }
+
+    await this.userRepository.save({
+      email: user.email,
+      password: "google"
+    });
+
+    return user;
+  }
+
   async findByEmail(email: string): Promise<UserEnitity> {
     const user = await this.userRepository.findOne({
       relations: {

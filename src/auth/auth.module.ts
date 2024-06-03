@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from 'src/user/user.module';
 import { JwtStrategy } from './strategies/jwt-strategy';
 import { LocalStrategy } from './strategies/local-strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 import { TokenModule } from 'src/token/token.module';
 
 @Module({
@@ -22,10 +23,16 @@ import { TokenModule } from 'src/token/token.module';
       }),
       inject: [ConfigService],
     }),
+    PassportModule.register({ defaultStrategy: 'google' }),
   ],
-  providers: [AuthService, JwtStrategy, ConfigService, LocalStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    ConfigService,
+    LocalStrategy,
+    GoogleStrategy,
+  ],
   exports: [AuthService, JwtModule, ConfigService],
   controllers: [AuthController],
 })
-
-export class AuthModule { }
+export class AuthModule {}
