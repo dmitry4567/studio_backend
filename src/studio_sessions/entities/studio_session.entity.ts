@@ -13,6 +13,12 @@ export class StudioSessionEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  title: string;
+
+  @Column({nullable: true})
+  name_track: string;
+
   @Column({ type: 'timestamp' })
   from: Date;
 

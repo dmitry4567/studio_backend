@@ -24,13 +24,16 @@ export class StudioSessionsService {
 
       const studio_session = new StudioSessionEntity();
 
+      studio_session.title = dto.title;
+      if (dto.name_track != '') {
+        studio_session.name_track = dto.name_track;
+      }
       studio_session.from = dto.from;
       studio_session.until = dto.until;
       studio_session.user_admin = user_admin;
       studio_session.user_client = user_client;
 
       const data = await this.studioSessionRepository.save(studio_session);
-      console.log(data);
 
       return data;
     } catch (error) {
@@ -46,10 +49,14 @@ export class StudioSessionsService {
       .leftJoinAndSelect('studio_session.user_client', 'user_client')
       .select([
         'studio_session.id',
+        'studio_session.title',
+        'studio_session.name_track',
         'studio_session.from',
         'studio_session.until',
         'user_admin.id',
+        'user_admin.nickname',
         'user_client.id',
+        'user_client.nickname',
       ])
       .getMany();
 

@@ -32,6 +32,11 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  @Post('/refresh')
+  async refresh(@Body() dto: RefreshTokenDto) {
+    return this.authService.refresh(dto);
+  }
+
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req) {
@@ -47,10 +52,5 @@ export class AuthController {
       message: 'User information from Google',
       user: req.user,
     };
-  }
-
-  @Post('/refresh')
-  async refresh(@Body() dto: RefreshTokenDto) {
-    return this.authService.refresh(dto);
   }
 }

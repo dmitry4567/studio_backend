@@ -1,7 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsInt, IsNotEmpty } from 'class-validator';
+import { IsISO8601, IsNotEmpty } from 'class-validator';
 
 export class CreateStudioSessionDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  title: string;
+
+  @ApiProperty()
+  name_track: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsISO8601()

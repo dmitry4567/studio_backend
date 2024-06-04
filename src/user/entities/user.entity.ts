@@ -18,6 +18,12 @@ export class UserEnitity {
   id: number;
 
   @Column()
+  nickname: string;
+
+  @Column()
+  fullname: string;
+
+  @Column()
   email: string;
 
   @Column()

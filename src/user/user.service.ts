@@ -31,6 +31,8 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(dto.password, this.hashSaltRounds);
 
     const user = await this.userRepository.save({
+      nickname: dto.nickname,
+      fullname: dto.fullname,
       email: dto.email,
       password: hashedPassword,
     });
@@ -54,7 +56,7 @@ export class UserService {
 
     await this.userRepository.save({
       email: user.email,
-      password: "google"
+      password: 'google',
     });
 
     return user;
