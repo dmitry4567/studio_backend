@@ -15,9 +15,7 @@ import { ConfigService } from '@nestjs/config';
 export class AuthService {
   constructor(
     private usersService: UserService,
-    private jwtService: JwtService,
     private tokenService: TokenService,
-    private configService: ConfigService,
   ) {}
 
   async login(email: string, password: string): Promise<any> {

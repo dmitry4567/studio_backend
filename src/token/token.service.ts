@@ -23,7 +23,7 @@ export class TokenService {
         id: userData.id,
         role: userData.role,
       },
-      { expiresIn: '10s', secret: this.configService.get<string>('JWT_SECRET') },
+      { expiresIn: '15m', secret: this.configService.get<string>('JWT_SECRET') },
     );
     const refresh_token = this.jwtService.sign(
       {
@@ -31,7 +31,7 @@ export class TokenService {
         role: userData.role,
       },
       {
-        expiresIn: '30s',
+        expiresIn: '30d',
         secret: this.configService.get<string>('JWT_SECRET'),
       },
     );

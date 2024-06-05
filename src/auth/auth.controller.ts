@@ -14,6 +14,7 @@ import { LocalAuthGuard } from './guards/local-auth-guards';
 import { AuthGuard } from '@nestjs/passport';
 import { retry } from 'rxjs';
 import { RefreshTokenDto } from 'src/user/dto/refresh-token-dto';
+import { LoginUserDto } from 'src/user/dto/login-user-dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -22,7 +23,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  @ApiBody({ type: CreateUserDto })
+  @ApiBody({ type: LoginUserDto })
   async login(@Request() req) {
     return req.user;
   }

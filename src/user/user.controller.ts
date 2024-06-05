@@ -11,6 +11,9 @@ import {
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guards';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { UpdateRoleUserDto } from './dto/update-role-user.dto';
+import { RolesGuard } from 'src/auth/guards/roles.guards';
 
 @ApiTags('user')
 @ApiBearerAuth()
@@ -22,7 +25,7 @@ export class UserController {
   // create(@Body() createUserDto: CreateUserDto) {
   //   return this.userService.create(createUserDto);
   // }
-  
+
   // @Get()
   // async getAllUsers() {
   //   return this.userService.getAllUsers();
@@ -33,11 +36,20 @@ export class UserController {
   // delete(@Request() req: any): Promise<DeleteResult> {
   //   return this.userService.remove(req);
   // }
-  
+
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Get('/info')
+  @Get('info')
   async getUser(@Request() req: any) {
     return this.userService.getUser(req.user);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Post('updateRoleUser')
+  async updateRoleUser(@Body() dto: UpdateRoleUserDto) {
+    return this.userService.updateRoleUser(dto);
   }
 }

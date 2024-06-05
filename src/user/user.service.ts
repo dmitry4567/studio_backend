@@ -6,6 +6,8 @@ import { DeleteResult, Repository } from 'typeorm';
 import { UserEnitity } from './entities/user.entity';
 import { RoleService } from 'src/role/role.service';
 import * as bcrypt from 'bcrypt';
+import { UpdateRoleUserDto } from './dto/update-role-user.dto';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class UserService {
@@ -43,6 +45,24 @@ export class UserService {
     await this.userRepository.save(user);
 
     return user;
+  }
+
+  async updateRoleUser(dto: UpdateRoleUserDto) {
+    const role = await this.roleService.getRoleByValue(dto.value);
+
+    if (!role) throw new BadRequestException(
+      `Роль не найдена`,
+    );
+
+    const user = await this.findByNickname(dto.nickname);
+
+    if (!user) throw new BadRequestException(
+      `Пользователь не найден`,
+    );
+
+    user.role = role;
+
+    return this.userRepository.save(user);
   }
 
   async findOrCreate(user: any) {
@@ -93,6 +113,12 @@ export class UserService {
         'studio_session_admins',
         'studio_session_clients',
       ],
+    });
+  }
+
+  async findByNickname(nickname: string) {
+    return this.userRepository.findOne({
+      where: { nickname },
     });
   }
 
