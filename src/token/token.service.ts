@@ -23,7 +23,10 @@ export class TokenService {
         id: userData.id,
         role: userData.role,
       },
-      { expiresIn: '15m', secret: this.configService.get<string>('JWT_SECRET') },
+      {
+        expiresIn: '15m',
+        secret: this.configService.get<string>('JWT_SECRET'),
+      },
     );
     const refresh_token = this.jwtService.sign(
       {
@@ -79,12 +82,14 @@ export class TokenService {
   }
 
   async deleteToken(user: UserEnitity) {
-    return this.tokenRepository.delete({ user: user });
+    return await this.tokenRepository.delete({ user: user });
+  }
+
+  async removeToken(refresh_token: string) {
+    return await this.tokenRepository.delete({refresh_token: refresh_token});
   }
 
   async findToken(refresh_token: string) {
-    const token = await this.tokenRepository.findOneBy({ refresh_token });
-
-    return token;
+    return await this.tokenRepository.findOneBy({ refresh_token });
   }
 }

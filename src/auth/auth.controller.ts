@@ -13,8 +13,8 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth-guards';
 import { AuthGuard } from '@nestjs/passport';
 import { retry } from 'rxjs';
-import { RefreshTokenDto } from 'src/user/dto/refresh-token-dto';
 import { LoginUserDto } from 'src/user/dto/login-user-dto';
+import { RefreshTokenDto } from './dto/refresh-token-dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -36,6 +36,11 @@ export class AuthController {
   @Post('/refresh')
   async refresh(@Body() dto: RefreshTokenDto) {
     return this.authService.refresh(dto);
+  }
+
+  @Post('/logout')
+  async logout(@Body() dto: RefreshTokenDto) {
+    return this.authService.logout(dto);
   }
 
   @Get('google')

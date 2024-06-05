@@ -8,8 +8,8 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from 'src/token/token.service';
-import { RefreshTokenDto } from 'src/user/dto/refresh-token-dto';
 import { ConfigService } from '@nestjs/config';
+import { RefreshTokenDto } from './dto/refresh-token-dto';
 
 @Injectable()
 export class AuthService {
@@ -60,5 +60,9 @@ export class AuthService {
     await this.tokenService.saveToken(user, tokens.refresh_token);
 
     return tokens;
+  }
+
+  async logout(dto: RefreshTokenDto) {
+    return await this.tokenService.removeToken(dto.refresh_token);
   }
 }

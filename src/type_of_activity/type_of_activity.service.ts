@@ -12,11 +12,11 @@ export class TypeOfActivityService {
     private typeOfActivityEntity: Repository<TypeOfActivityEntity>,
   ) {}
 
-  create(dto: CreateTypeOfActivityDto) {
+  async create(dto: CreateTypeOfActivityDto) {
     return this.typeOfActivityEntity.save(dto);
   }
 
-  findAll() {
+  async findAll() {
     return this.typeOfActivityEntity.find();
   }
 
@@ -35,7 +35,7 @@ export class TypeOfActivityService {
     return this.typeOfActivityEntity.save(toUpdate);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.typeOfActivityEntity.delete(id);
   }
 }
