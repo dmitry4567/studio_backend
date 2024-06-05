@@ -45,6 +45,14 @@ export class UserController {
   }
 
   @Roles('admin')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get('admins')
+  async getAdmins() {
+    return this.userService.getAdmins();
+  }
+
+  @Roles('admin')
   @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

@@ -50,15 +50,11 @@ export class UserService {
   async updateRoleUser(dto: UpdateRoleUserDto) {
     const role = await this.roleService.getRoleByValue(dto.value);
 
-    if (!role) throw new BadRequestException(
-      `Роль не найдена`,
-    );
+    if (!role) throw new BadRequestException(`Роль не найдена`);
 
     const user = await this.findByNickname(dto.nickname);
 
-    if (!user) throw new BadRequestException(
-      `Пользователь не найден`,
-    );
+    if (!user) throw new BadRequestException(`Пользователь не найден`);
 
     user.role = role;
 
@@ -149,6 +145,16 @@ export class UserService {
         id: client.id,
       })),
     }));
+  }
+
+  async getAdmins() {
+    return await this.userRepository.find({
+      where: { role: { value: 'admin' } },
+      select: [
+        'id',
+        'nickname',
+      ],
+    });
   }
 
   async remove(req: any): Promise<DeleteResult> {
