@@ -39,10 +39,6 @@ export class StudioSessionsService {
         'user',
       );
 
-      if (!user_admins.length || !user_clients.length) {
-        throw new Error('User not found');
-      }
-
       const studio_session = new StudioSessionEntity();
 
       const type_of_activity = await this.typeOfActivityService.findOne(

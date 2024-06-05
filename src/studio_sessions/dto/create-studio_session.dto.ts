@@ -36,7 +36,6 @@ export class CreateStudioSessionDto {
       type: 'number',
     },
   })
-  @ArrayMinSize(1)
   @IsNotEmpty()
   user_clients_id: number[];
 }
