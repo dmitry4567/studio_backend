@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsISO8601, IsNotEmpty } from 'class-validator';
+import { IsISO8601, IsInt, IsNotEmpty } from 'class-validator';
 
 export class CreateStudioSessionDto {
   @ApiProperty()
@@ -11,13 +11,13 @@ export class CreateStudioSessionDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsISO8601()
-  from: Date;
+  @IsInt()
+  from: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsISO8601()
-  until: Date;
+  @IsInt()
+  until: number;
 
   @ApiProperty()
   @IsNotEmpty()

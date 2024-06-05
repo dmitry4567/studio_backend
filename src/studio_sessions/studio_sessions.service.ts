@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateStudioSessionDto } from './dto/create-studio_session.dto';
 import { StudioSessionEntity } from './entities/studio_session.entity';
 import { Repository } from 'typeorm';
@@ -15,6 +15,19 @@ export class StudioSessionsService {
 
   async create(dto: CreateStudioSessionDto) {
     try {
+      if (dto.from >= dto.until) {
+        throw new HttpException(
+          'Длительность сессии должна быть больше нуля',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const isOccupied = await this.isTimeOccupied(dto.from, dto.until);
+
+      if (isOccupied) {
+        throw new HttpException('Это время занято', HttpStatus.CONFLICT);
+      }
+
       const user_admin = await this.userService.findById(dto.user_admin_id);
       const user_client = await this.userService.findById(dto.user_client_id);
 
@@ -28,8 +41,8 @@ export class StudioSessionsService {
       if (dto.name_track != '') {
         studio_session.name_track = dto.name_track;
       }
-      studio_session.from = dto.from;
-      studio_session.until = dto.until;
+      studio_session.from = new Date(dto.from * 1000);
+      studio_session.until = new Date(dto.until * 1000);
       studio_session.user_admin = user_admin;
       studio_session.user_client = user_client;
 
@@ -37,9 +50,29 @@ export class StudioSessionsService {
 
       return data;
     } catch (error) {
-      console.error('Error creating studio session:', error);
+      if (error.code === '23505') {
+        throw new HttpException('Это время занято', HttpStatus.CONFLICT);
+      }
       throw error;
     }
+  }
+
+  private async isTimeOccupied(
+    fromUnix: number,
+    untilUnix: number,
+  ): Promise<boolean> {
+    const fromTimestamp = new Date(fromUnix * 1000);
+    const untilTimestamp = new Date(untilUnix * 1000);
+
+    const overlappingSessions = await this.studioSessionRepository
+      .createQueryBuilder('studio_session')
+      .where('studio_session.from < :until AND studio_session.until > :from', {
+        from: fromTimestamp,
+        until: untilTimestamp,
+      })
+      .getCount();
+
+    return overlappingSessions > 0;
   }
 
   async findAll() {

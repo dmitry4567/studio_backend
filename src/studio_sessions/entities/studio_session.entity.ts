@@ -6,9 +6,11 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 
 @Entity('studio_sessions')
+@Unique(['from', 'until'])
 export class StudioSessionEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,10 +21,10 @@ export class StudioSessionEntity {
   @Column({nullable: true})
   name_track: string;
 
-  @Column({ type: 'timestamp' })
+  @Column()
   from: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column()
   until: Date;
 
   @ManyToOne(() => UserEnitity, (user) => user.studio_session_admins, {
