@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudioSessionEntity } from './entities/studio_session.entity';
 import { UserModule } from 'src/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeOfActivityModule } from 'src/type_of_activity/type_of_activity.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([StudioSessionEntity]), UserModule, JwtModule],
+  imports: [TypeOrmModule.forFeature([StudioSessionEntity]), UserModule, TypeOfActivityModule, JwtModule],
   controllers: [StudioSessionsController],
   providers: [StudioSessionsService],
 })

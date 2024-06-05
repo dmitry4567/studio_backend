@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { StudioSessionsModule } from './studio_sessions/studio_sessions.module';
 import { TokenModule } from './token/token.module';
+import { TypeOfActivityModule } from './type_of_activity/type_of_activity.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TokenModule } from './token/token.module';
     RoleModule,
     StudioSessionsModule,
     TokenModule,
+    TypeOfActivityModule,
   ],
   controllers: [],
   providers: [],

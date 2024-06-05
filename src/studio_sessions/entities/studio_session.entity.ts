@@ -1,10 +1,13 @@
+import { TypeOfActivityEntity } from 'src/type_of_activity/entities/type_of_activity.entity';
 import { UserEnitity } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
@@ -15,8 +18,11 @@ export class StudioSessionEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  title: string;
+  @ManyToOne(() => TypeOfActivityEntity, (type_of_activity) => type_of_activity.studio_session, {
+    eager: true,
+  })
+  @JoinColumn()
+  type_of_activity: TypeOfActivityEntity;
 
   @Column({nullable: true})
   name_track: string;

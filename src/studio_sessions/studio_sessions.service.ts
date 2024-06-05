@@ -4,6 +4,7 @@ import { StudioSessionEntity } from './entities/studio_session.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
+import { TypeOfActivityService } from 'src/type_of_activity/type_of_activity.service';
 
 @Injectable()
 export class StudioSessionsService {
@@ -11,6 +12,7 @@ export class StudioSessionsService {
     @InjectRepository(StudioSessionEntity)
     private studioSessionRepository: Repository<StudioSessionEntity>,
     private readonly userService: UserService,
+    private readonly typeOfActivityService: TypeOfActivityService,
   ) {}
 
   async create(dto: CreateStudioSessionDto) {
@@ -25,16 +27,16 @@ export class StudioSessionsService {
       const isOccupied = await this.isTimeOccupied(dto.from, dto.until);
 
       if (isOccupied) {
-        throw new HttpException('Это время занято', HttpStatus.CONFLICT);
+        throw new HttpException('Время занято', HttpStatus.CONFLICT);
       }
 
       const user_admins = await this.userService.findRolesByIds(
         dto.user_admins_id,
-        "admin"
+        'admin',
       );
       const user_clients = await this.userService.findRolesByIds(
         dto.user_clients_id,
-        "user"
+        'user',
       );
 
       if (!user_admins.length || !user_clients.length) {
@@ -43,7 +45,14 @@ export class StudioSessionsService {
 
       const studio_session = new StudioSessionEntity();
 
-      studio_session.title = dto.title;
+      const type_of_activity = await this.typeOfActivityService.findOne(
+        dto.type_of_activity_id,
+      );
+      if (!type_of_activity) {
+        throw new HttpException('Тип не найден', HttpStatus.NOT_FOUND);
+      }
+      studio_session.type_of_activity = type_of_activity;
+
       if (dto.name_track != '') {
         studio_session.name_track = dto.name_track;
       }
@@ -85,11 +94,12 @@ export class StudioSessionsService {
   async findAll() {
     const sessions = await this.studioSessionRepository
       .createQueryBuilder('studio_session')
+      .leftJoinAndSelect('studio_session.type_of_activity', 'type_of_activity')
       .leftJoinAndSelect('studio_session.user_admins', 'user_admins')
       .leftJoinAndSelect('studio_session.user_clients', 'user_clients')
       .select([
         'studio_session.id',
-        'studio_session.title',
+        'type_of_activity.name',
         'studio_session.name_track',
         'studio_session.from',
         'studio_session.until',
