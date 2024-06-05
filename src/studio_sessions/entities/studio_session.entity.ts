@@ -3,8 +3,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
@@ -27,17 +27,13 @@ export class StudioSessionEntity {
   @Column()
   until: Date;
 
-  @ManyToOne(() => UserEnitity, (user) => user.studio_session_admins, {
-    eager: true,
-  })
-  @JoinColumn({ name: 'user_admin_id' })
-  user_admin: UserEnitity;
+  @ManyToMany(() => UserEnitity, user => user.admin_sessions)
+  @JoinTable()
+  user_admins: UserEnitity[];
 
-  @ManyToOne(() => UserEnitity, (user) => user.studio_session_clients, {
-    eager: true,
-  })
-  @JoinColumn({ name: 'user_client_id' })
-  user_client: UserEnitity;
+  @ManyToMany(() => UserEnitity, user => user.client_sessions)
+  @JoinTable()
+  user_clients: UserEnitity[];
 
   @CreateDateColumn()
   created_at: Date;

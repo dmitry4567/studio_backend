@@ -19,11 +19,11 @@ export class CreateStudioSessionDto {
   @IsInt()
   until: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'array' })
   @IsNotEmpty()
-  user_admin_id: number;
+  user_admins_id: number[];
 
-  @ApiProperty()
+  @ApiProperty({ type: 'array' })
   @IsNotEmpty()
-  user_client_id: number;
+  user_clients_id: number[];
 }

@@ -28,10 +28,16 @@ export class StudioSessionsService {
         throw new HttpException('Это время занято', HttpStatus.CONFLICT);
       }
 
-      const user_admin = await this.userService.findById(dto.user_admin_id);
-      const user_client = await this.userService.findById(dto.user_client_id);
+      const user_admins = await this.userService.findRolesByIds(
+        dto.user_admins_id,
+        "admin"
+      );
+      const user_clients = await this.userService.findRolesByIds(
+        dto.user_clients_id,
+        "user"
+      );
 
-      if (!user_admin || !user_client) {
+      if (!user_admins.length || !user_clients.length) {
         throw new Error('User not found');
       }
 
@@ -43,8 +49,9 @@ export class StudioSessionsService {
       }
       studio_session.from = new Date(dto.from * 1000);
       studio_session.until = new Date(dto.until * 1000);
-      studio_session.user_admin = user_admin;
-      studio_session.user_client = user_client;
+
+      studio_session.user_admins = user_admins;
+      studio_session.user_clients = user_clients;
 
       const data = await this.studioSessionRepository.save(studio_session);
 
@@ -78,18 +85,18 @@ export class StudioSessionsService {
   async findAll() {
     const sessions = await this.studioSessionRepository
       .createQueryBuilder('studio_session')
-      .leftJoinAndSelect('studio_session.user_admin', 'user_admin')
-      .leftJoinAndSelect('studio_session.user_client', 'user_client')
+      .leftJoinAndSelect('studio_session.user_admins', 'user_admins')
+      .leftJoinAndSelect('studio_session.user_clients', 'user_clients')
       .select([
         'studio_session.id',
         'studio_session.title',
         'studio_session.name_track',
         'studio_session.from',
         'studio_session.until',
-        'user_admin.id',
-        'user_admin.nickname',
-        'user_client.id',
-        'user_client.nickname',
+        'user_admins.id',
+        'user_admins.nickname',
+        'user_clients.id',
+        'user_clients.nickname',
       ])
       .getMany();
 

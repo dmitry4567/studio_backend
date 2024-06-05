@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 import { UserEnitity } from './entities/user.entity';
 import { RoleService } from 'src/role/role.service';
 import * as bcrypt from 'bcrypt';
@@ -102,14 +102,25 @@ export class UserService {
   async findById(id: number) {
     return this.userRepository.findOne({
       where: { id },
-      select: [
-        'id',
-        'email',
-        'role',
-        'studio_session_admins',
-        'studio_session_clients',
-      ],
+      select: ['id', 'email', 'role', 'admin_sessions', 'client_sessions'],
     });
+  }
+
+  async findRolesByIds(ids: number[], role_value: string) {
+    const data = await this.userRepository.find({
+      where: {
+        id: In(ids),
+        role: { value: role_value },
+      },
+      relations: ['role'],
+      select: ['id', 'role'],
+    });
+
+    if (data.length != ids.length) {
+      throw new HttpException(`Не все пользователи являются ролью ${role_value}`, HttpStatus.BAD_REQUEST)
+    }
+
+    return data
   }
 
   async findByNickname(nickname: string) {
@@ -138,10 +149,10 @@ export class UserService {
 
     return users.map((user) => ({
       ...user,
-      studio_session_admins: user.studio_session_admins.map((admin) => ({
+      studio_session_admins: user.admin_sessions.map((admin) => ({
         id: admin.id,
       })),
-      studio_session_clients: user.studio_session_clients.map((client) => ({
+      studio_session_clients: user.client_sessions.map((client) => ({
         id: client.id,
       })),
     }));
@@ -150,10 +161,7 @@ export class UserService {
   async getAdmins() {
     return await this.userRepository.find({
       where: { role: { value: 'admin' } },
-      select: [
-        'id',
-        'nickname',
-      ],
+      select: ['id', 'nickname'],
     });
   }
 

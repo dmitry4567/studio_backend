@@ -6,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -32,19 +33,11 @@ export class UserEnitity {
   @ManyToOne(() => Role, (role) => role.user)
   role: Role;
 
-  @ApiHideProperty()
-  @OneToMany(
-    () => StudioSessionEntity,
-    (studio_session) => studio_session.user_admin,
-  )
-  studio_session_admins: StudioSessionEntity[];
+  @ManyToMany(() => StudioSessionEntity, studioSession => studioSession.user_admins)
+  admin_sessions: StudioSessionEntity[];
 
-  @ApiHideProperty()
-  @OneToMany(
-    () => StudioSessionEntity,
-    (studio_session) => studio_session.user_client,
-  )
-  studio_session_clients: StudioSessionEntity[];
+  @ManyToMany(() => StudioSessionEntity, studioSession => studioSession.user_clients)
+  client_sessions: StudioSessionEntity[];
   
   @OneToMany(() => TokenEntity, (token) => token.user)
   token: TokenEntity;
