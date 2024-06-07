@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { TypeOfActivityService } from 'src/type_of_activity/type_of_activity.service';
+import { FcmNotificationService } from 'src/fcm-notification/fcm-notification.service';
+import { title } from 'process';
 
 @Injectable()
 export class StudioSessionsService {
@@ -13,6 +15,7 @@ export class StudioSessionsService {
     private studioSessionRepository: Repository<StudioSessionEntity>,
     private readonly userService: UserService,
     private readonly typeOfActivityService: TypeOfActivityService,
+    private readonly fcmNotificationService: FcmNotificationService,
   ) {}
 
   async create(dto: CreateStudioSessionDto) {
@@ -59,6 +62,7 @@ export class StudioSessionsService {
       studio_session.user_clients = user_clients;
 
       const data = await this.studioSessionRepository.save(studio_session);
+      await this.sendNotification(data);
 
       return data;
     } catch (error) {
@@ -67,6 +71,25 @@ export class StudioSessionsService {
       }
       throw error;
     }
+  }
+
+  private async sendNotification(data: any) {
+    let formattedFromDate = data.from.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    let formattedUntilDate = data.until.toLocaleTimeString('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    await this.fcmNotificationService.sendFirebaseMessages(
+      data.type_of_activity.name,
+      `${data.user_admins[0].nickname}\n${formattedFromDate}-${formattedUntilDate}`,
+    );
   }
 
   private async isTimeOccupied(

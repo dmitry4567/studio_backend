@@ -112,7 +112,7 @@ export class UserService {
         id: In(ids),
         role: { value: role_value },
       },
-      select: ['id'],
+      select: ['id', 'nickname'],
     });
 
     if (data.length != ids.length) {

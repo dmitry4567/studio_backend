@@ -1,4 +1,4 @@
-import { ApiHideProperty } from '@nestjs/swagger';
+import { FcmNotificationEntity } from 'src/fcm-notification/entities/fcm-notification.entity';
 import { Role } from 'src/role/entities/role.entity';
 import { StudioSessionEntity } from 'src/studio_sessions/entities/studio_session.entity';
 import { TokenEntity } from 'src/token/entities/token.entity';
@@ -41,6 +41,9 @@ export class UserEnitity {
   
   @OneToMany(() => TokenEntity, (token) => token.user)
   token: TokenEntity;
+
+  @OneToMany(() => FcmNotificationEntity, (token) => token.device_token)
+  device_token: FcmNotificationEntity;
 
   @CreateDateColumn()
   createAt: Date;

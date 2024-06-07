@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { StudioSessionsModule } from './studio_sessions/studio_sessions.module';
 import { TokenModule } from './token/token.module';
 import { TypeOfActivityModule } from './type_of_activity/type_of_activity.module';
+import { FcmNotificationModule } from './fcm-notification/fcm-notification.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TypeOfActivityModule } from './type_of_activity/type_of_activity.module
     StudioSessionsModule,
     TokenModule,
     TypeOfActivityModule,
+    FcmNotificationModule,
   ],
   controllers: [],
   providers: [],
