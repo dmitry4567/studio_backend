@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guards';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
+import { ChooseTimeSessionDto } from './dto/choose-time.dto';
 
 @ApiTags('studio-sessions')
 @Controller('studio-sessions')
@@ -23,5 +24,10 @@ export class StudioSessionsController {
   @Get('all')
   async findAll() {
     return this.studioSessionsService.findAll();
+  }
+
+  @Post('findByTimePeriod')
+  async findByTimePeriod(@Body() dto: ChooseTimeSessionDto) {
+    return this.studioSessionsService.findByTimePeriod(dto);
   }
 }

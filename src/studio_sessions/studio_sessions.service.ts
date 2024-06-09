@@ -7,6 +7,7 @@ import { UserService } from 'src/user/user.service';
 import { TypeOfActivityService } from 'src/type_of_activity/type_of_activity.service';
 import { FcmNotificationService } from 'src/fcm-notification/fcm-notification.service';
 import { title } from 'process';
+import { ChooseTimeSessionDto } from './dto/choose-time.dto';
 
 @Injectable()
 export class StudioSessionsService {
@@ -127,6 +128,33 @@ export class StudioSessionsService {
         'user_clients.id',
         'user_clients.nickname',
       ])
+      .getMany();
+
+    return sessions;
+  }
+
+  async findByTimePeriod(dto: ChooseTimeSessionDto) {
+    let fromDate = new Date(dto.from * 1000);
+    let untilDate = new Date(dto.until * 1000);
+
+    const sessions = await this.studioSessionRepository
+      .createQueryBuilder('studio_session')
+      .leftJoinAndSelect('studio_session.type_of_activity', 'type_of_activity')
+      .leftJoinAndSelect('studio_session.user_admins', 'user_admins')
+      .leftJoinAndSelect('studio_session.user_clients', 'user_clients')
+      .select([
+        'studio_session.id',
+        'type_of_activity.name',
+        'studio_session.name_track',
+        'studio_session.from',
+        'studio_session.until',
+        'user_admins.id',
+        'user_admins.nickname',
+        'user_clients.id',
+        'user_clients.nickname',
+      ])
+      .where('studio_session.from >= :fromDate', { fromDate })
+      .andWhere('studio_session.until <= :untilDate', { untilDate })
       .getMany();
 
     return sessions;
