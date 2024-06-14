@@ -6,7 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { TypeOfActivityService } from 'src/type_of_activity/type_of_activity.service';
 import { FcmNotificationService } from 'src/fcm-notification/fcm-notification.service';
-import { title } from 'process';
 import { ChooseTimeSessionDto } from './dto/choose-time.dto';
 
 @Injectable()
@@ -56,8 +55,8 @@ export class StudioSessionsService {
       if (dto.name_track != '') {
         studio_session.name_track = dto.name_track;
       }
-      studio_session.from = new Date(dto.from * 1000);
-      studio_session.until = new Date(dto.until * 1000);
+      studio_session.from = new Date(dto.from);
+      studio_session.until = new Date(dto.until);
 
       studio_session.user_admins = user_admins;
       studio_session.user_clients = user_clients;
@@ -134,8 +133,8 @@ export class StudioSessionsService {
   }
 
   async findByTimePeriod(dto: ChooseTimeSessionDto) {
-    let fromDate = new Date(dto.from * 1000);
-    let untilDate = new Date(dto.until * 1000);
+    let fromDate = new Date(dto.from);
+    let untilDate = new Date(dto.until);
 
     const sessions = await this.studioSessionRepository
       .createQueryBuilder('studio_session')
