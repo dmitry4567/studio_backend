@@ -39,9 +39,9 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Get('info')
+  @Post('info')
   async getUser(@Request() req: any) {
-    return this.userService.getUser(req.user);
+    return this.userService.getUser(req.user.id);
   }
 
   @Roles('admin')

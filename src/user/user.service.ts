@@ -1,4 +1,10 @@
-import { BadRequestException, HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -91,8 +97,13 @@ export class UserService {
     return user;
   }
 
-  async getUser(user) {
-    return user;
+  async getUser(id: number) {
+    const userData = await this.userRepository.findOne({
+      where: { id },
+      relations: ['token'],
+      select: ['id', 'nickname', 'fullname', 'email'],
+    });
+    return userData;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -116,10 +127,13 @@ export class UserService {
     });
 
     if (data.length != ids.length) {
-      throw new HttpException(`Не все пользователи являются ролью ${role_value}`, HttpStatus.BAD_REQUEST)
+      throw new HttpException(
+        `Не все пользователи являются ролью ${role_value}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    return data
+    return data;
   }
 
   async findByNickname(nickname: string) {

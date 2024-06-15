@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import * as serviceAccount from '../../serviceAccount.json';
 import { BatchResponse } from 'firebase-admin/lib/messaging/messaging-api';
@@ -37,10 +37,14 @@ export class FcmNotificationService {
         user: user,
         device_token,
       });
-      return await this.fcmTokenRepository.save(token);
+      await this.fcmTokenRepository.save(token);
+
+      return new HttpException(`Уведомления включены`, HttpStatus.OK);
     }
 
-    return await this.fcmTokenRepository.delete({ user });
+    await this.fcmTokenRepository.delete({ user });
+
+    return new HttpException(`Уведомления отключены`, HttpStatus.CREATED);
   }
 
   public async sendFirebaseMessages(
