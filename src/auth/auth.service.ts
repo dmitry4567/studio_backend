@@ -51,7 +51,6 @@ export class AuthService {
     if (!userData || !tokenFromDb) {
       throw new UnauthorizedException();
     }
-
     const user = await this.usersService.findById(userData.id);
 
     await this.tokenService.deleteToken(user);

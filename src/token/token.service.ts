@@ -24,7 +24,7 @@ export class TokenService {
         role: userData.role,
       },
       {
-        expiresIn: '15m',
+        expiresIn: '5s',
         secret: this.configService.get<string>('JWT_SECRET'),
       },
     );
@@ -86,7 +86,7 @@ export class TokenService {
   }
 
   async removeToken(refresh_token: string) {
-    return await this.tokenRepository.delete({refresh_token: refresh_token});
+    return await this.tokenRepository.delete({ refresh_token: refresh_token });
   }
 
   async findToken(refresh_token: string) {

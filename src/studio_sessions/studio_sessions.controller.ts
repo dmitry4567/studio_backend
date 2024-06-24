@@ -26,6 +26,8 @@ export class StudioSessionsController {
     return this.studioSessionsService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth("token")
   @Post('findByTimePeriod')
   async findByTimePeriod(@Body() dto: ChooseTimeSessionDto) {
     return this.studioSessionsService.findByTimePeriod(dto);

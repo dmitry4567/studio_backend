@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsISO8601, IsInt, IsNotEmpty } from 'class-validator';
-import { IsNull } from 'typeorm';
+import { IsInt, IsNotEmpty } from 'class-validator';
 
 export class ChooseTimeSessionDto {
   @ApiProperty()
