@@ -4,9 +4,14 @@ import { FcmNotificationController } from './fcm-notification.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FcmNotificationEntity } from './entities/fcm-notification.entity';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FcmNotificationEntity]), JwtModule],
+  imports: [
+    TypeOrmModule.forFeature([FcmNotificationEntity]),
+    JwtModule,
+    UserModule,
+  ],
   controllers: [FcmNotificationController],
   providers: [FcmNotificationService],
   exports: [FcmNotificationService],

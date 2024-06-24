@@ -14,6 +14,7 @@ import { RoleService } from 'src/role/role.service';
 import * as bcrypt from 'bcrypt';
 import { UpdateRoleUserDto } from './dto/update-role-user.dto';
 import { NotFoundError } from 'rxjs';
+import { FcmNotificationEntity } from 'src/fcm-notification/entities/fcm-notification.entity';
 
 @Injectable()
 export class UserService {
@@ -176,6 +177,10 @@ export class UserService {
       where: { role: { value: 'admin' } },
       select: ['id', 'nickname'],
     });
+  }
+
+  async addDeviceToken(user: UserEnitity, device_token: FcmNotificationEntity) {
+    return await this.userRepository.save(user);
   }
 
   async remove(req: any): Promise<DeleteResult> {

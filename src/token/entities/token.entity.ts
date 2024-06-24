@@ -1,5 +1,5 @@
 import { UserEnitity } from 'src/user/entities/user.entity';
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('token')
 export class TokenEntity {

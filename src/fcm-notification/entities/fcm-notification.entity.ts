@@ -1,5 +1,5 @@
 import { UserEnitity } from 'src/user/entities/user.entity';
-import { PrimaryGeneratedColumn, ManyToOne, Column, Entity } from 'typeorm';
+import { PrimaryGeneratedColumn, ManyToOne, Column, Entity, OneToOne } from 'typeorm';
 
 @Entity('device_token')
 export class FcmNotificationEntity {

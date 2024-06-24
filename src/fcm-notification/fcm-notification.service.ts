@@ -9,6 +9,7 @@ import { UserEnitity } from 'src/user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FcmNotificationEntity } from './entities/fcm-notification.entity';
 import { Repository } from 'typeorm';
+import { UserService } from 'src/user/user.service';
 
 export interface ISendFirebaseMessages {
   token: string;
@@ -25,6 +26,7 @@ export class FcmNotificationService {
   constructor(
     @InjectRepository(FcmNotificationEntity)
     private readonly fcmTokenRepository: Repository<FcmNotificationEntity>,
+    private readonly userService: UserService,
   ) {}
 
   async addNotification(user: UserEnitity, dto: CreateFcmNotificationDto) {
@@ -39,12 +41,12 @@ export class FcmNotificationService {
       });
       await this.fcmTokenRepository.save(token);
 
-      return new HttpException(`Уведомления включены`, HttpStatus.OK);
+      throw new HttpException(`Уведомления включены`, HttpStatus.OK);
     }
 
-    await this.fcmTokenRepository.delete({ user });
+    await this.fcmTokenRepository.remove(tokenData);
 
-    return new HttpException(`Уведомления отключены`, HttpStatus.CREATED);
+    throw new HttpException(`Уведомления отключены`, HttpStatus.OK);
   }
 
   public async sendFirebaseMessages(
