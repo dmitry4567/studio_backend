@@ -6,7 +6,7 @@ export class FcmNotificationEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEnitity, (user) => user.device_token)
+  @OneToOne(() => UserEnitity, (user) => user.device_token)
   user: UserEnitity;
 
   @Column()

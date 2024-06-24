@@ -49,7 +49,11 @@ export class UserEnitity {
   @OneToMany(() => TokenEntity, (token) => token.user)
   token: TokenEntity;
 
-  @OneToMany(() => FcmNotificationEntity, (token) => token.device_token)
+  @OneToOne(() => FcmNotificationEntity, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn()
   device_token: FcmNotificationEntity;
 
   @CreateDateColumn()
