@@ -14,6 +14,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth-guards';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { UpdateRoleUserDto } from './dto/update-role-user.dto';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
+import { GetAdminsDto } from './dto/get-admins.dto';
 
 @ApiTags('user')
 @ApiBearerAuth()
@@ -47,8 +48,8 @@ export class UserController {
   @Roles('admin')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Get('admins')
-  async getAdmins() {
+  @Post('admins')
+  async getAdmins(@Body() dto: GetAdminsDto) {
     return this.userService.getAdmins();
   }
 

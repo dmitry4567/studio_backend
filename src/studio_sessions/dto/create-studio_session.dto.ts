@@ -1,8 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsISO8601, IsInt, IsNotEmpty } from 'class-validator';
-import { IsNull } from 'typeorm';
+import {
+  ArrayMinSize,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 
 export class CreateStudioSessionDto {
+  @ApiProperty()
+  @IsString()
+  token: number;
+
   @ApiProperty()
   @IsNotEmpty()
   type_of_activity_id: number;
@@ -36,6 +44,5 @@ export class CreateStudioSessionDto {
       type: 'number',
     },
   })
-  @IsNotEmpty()
   user_clients_id: number[];
 }

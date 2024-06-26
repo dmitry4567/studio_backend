@@ -18,13 +18,17 @@ export class StudioSessionEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => TypeOfActivityEntity, (type_of_activity) => type_of_activity.studio_session, {
-    eager: true,
-  })
+  @ManyToOne(
+    () => TypeOfActivityEntity,
+    (type_of_activity) => type_of_activity.studio_session,
+    {
+      eager: true,
+    },
+  )
   @JoinColumn()
   type_of_activity: TypeOfActivityEntity;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   name_track: string;
 
   @Column()
@@ -33,11 +37,13 @@ export class StudioSessionEntity {
   @Column()
   until: Date;
 
-  @ManyToMany(() => UserEnitity, user => user.admin_sessions)
+  @ManyToMany(() => UserEnitity, (user) => user.admin_sessions)
   @JoinTable()
   user_admins: UserEnitity[];
 
-  @ManyToMany(() => UserEnitity, user => user.client_sessions)
+  @ManyToMany(() => UserEnitity, (user) => user.client_sessions, {
+    nullable: true,
+  })
   @JoinTable()
   user_clients: UserEnitity[];
 

@@ -33,16 +33,20 @@ export class StudioSessionsService {
         throw new HttpException('Время занято', HttpStatus.CONFLICT);
       }
 
+      const studio_session = new StudioSessionEntity();
+      
       const user_admins = await this.userService.findRolesByIds(
         dto.user_admins_id,
         'admin',
       );
-      const user_clients = await this.userService.findRolesByIds(
-        dto.user_clients_id,
-        'user',
-      );
 
-      const studio_session = new StudioSessionEntity();
+      if (dto.user_clients_id != null) {
+        const user_clients = await this.userService.findRolesByIds(
+          dto.user_clients_id,
+          'user',
+        );
+        studio_session.user_clients = user_clients;
+      }
 
       const type_of_activity = await this.typeOfActivityService.findOne(
         dto.type_of_activity_id,
@@ -59,7 +63,6 @@ export class StudioSessionsService {
       studio_session.until = new Date(dto.until);
 
       studio_session.user_admins = user_admins;
-      studio_session.user_clients = user_clients;
 
       const data = await this.studioSessionRepository.save(studio_session);
       await this.sendNotification(data);

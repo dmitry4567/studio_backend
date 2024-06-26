@@ -33,18 +33,14 @@ export class RolesGuard implements CanActivate {
       }
 
       const req = context.switchToHttp().getRequest();
-      const authHeader = req.headers.authorization;
 
-      const bearer = authHeader.split(' ')[0];
-      const token = authHeader.split(' ')[1];
+      const token = req.body.token;
+      const secretKey = this.configService.get('JWT_SECRET');
 
-      if (bearer !== 'Bearer' || !token) {
-        throw new UnauthorizedException({
-          message: 'Пользователь не авторизован',
-        });
+      if (!token) {
+        throw new HttpException('token not found', HttpStatus.NOT_FOUND);
       }
 
-      const secretKey = this.configService.get('JWT_SECRET');
       const user = this.jwtService.verify(token, { secret: secretKey });
 
       req.user = user;
