@@ -59,9 +59,7 @@ export class FcmNotificationService {
     const messagesForAllUsers = allDeviceTokens.map((deviceToken) => {
       return {
         title: title,
-        // 'Запись',
         message: message,
-        // 'smokeynagato\n9 июня 19:00-20:00',
         token: deviceToken.device_token,
       };
     });
