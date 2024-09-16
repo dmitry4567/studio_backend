@@ -15,6 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { retry } from 'rxjs';
 import { LoginUserDto } from 'src/user/dto/login-user-dto';
 import { RefreshTokenDto } from './dto/refresh-token-dto';
+import { JwtAuthGuard } from './guards/jwt-auth-guards';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -35,7 +36,7 @@ export class AuthController {
 
   @Post('/refresh')
   async refresh(@Body() dto: RefreshTokenDto) {
-    return this.authService.refresh(dto);
+    return await this.authService.refresh(dto);
   }
 
   @Post('/logout')

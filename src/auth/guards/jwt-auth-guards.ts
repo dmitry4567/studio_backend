@@ -22,7 +22,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
 
-    const token = request.body.token;
+    // const token = request.body.token;
+    const [_, token] = request.headers.authorization?.split(' ') ?? [];
+
     const secretKey = this.configService.get('JWT_SECRET');
 
     if (!token) {

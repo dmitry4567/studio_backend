@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  HttpException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -16,11 +16,11 @@ export class AuthService {
   constructor(
     private usersService: UserService,
     private tokenService: TokenService,
-  ) {}
+  ) { }
 
   async login(email: string, password: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-    if (!user) throw new BadRequestException('Пользователя с таким email нет');
+    if (!user) throw new HttpException({ "error": "Пользователя с таким email нет" }, 401);
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
@@ -51,11 +51,13 @@ export class AuthService {
     if (!userData || !tokenFromDb) {
       throw new UnauthorizedException();
     }
+    
     const user = await this.usersService.findById(userData.id);
 
     await this.tokenService.deleteToken(user);
 
     const tokens = await this.tokenService.generateToken({ ...user });
+
     await this.tokenService.saveToken(user, tokens.refresh_token);
 
     return tokens;

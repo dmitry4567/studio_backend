@@ -11,7 +11,7 @@ export const getPostgresConfig = async (
     username: configService.get('DATABASE_USERNAME'),
     password: configService.get('DATABASE_PASSWORD'),
     database: configService.get('DATABASE_NAME'),
-    synchronize: configService.get('DATABASE_SYNCHRONIZE') === 'true',
+    synchronize: true,
     autoLoadEntities: true,
   };
 };
