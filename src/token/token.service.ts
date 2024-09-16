@@ -24,7 +24,7 @@ export class TokenService {
         role: userData.role,
       },
       {
-        expiresIn: '1m',
+        expiresIn: '15m',
         secret: this.configService.get<string>('JWT_SECRET'),
       },
     );
