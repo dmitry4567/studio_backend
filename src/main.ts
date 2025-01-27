@@ -54,14 +54,17 @@ async function init(app: INestApplication<any>) {
     adminEntity.nickname = process.env.NICKNAME_ADMIN;
     adminEntity.fullname = process.env.NICKNAME_ADMIN;
     adminEntity.email = process.env.EMAIL_ADMIN;
-    const hashedPassword = await bcrypt.hash(
-      process.env.PASSWORD_ADMIN,
-      Number(process.env.HASH_SALT_ROUNDS),
-    );
-    adminEntity.password = hashedPassword;
-    adminEntity.role = roleadmin;
+    
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(process.env.PASSWORD_ADMIN, salt, async function(err, hash) {
+        const hashedPassword = hash;
 
-    await userRepository.save(adminEntity);
+        adminEntity.password = hashedPassword;
+        adminEntity.role = roleadmin;
+    
+        await userRepository.save(adminEntity);
+      });
+    });
 
     console.log('Admin has been created.');
   }
