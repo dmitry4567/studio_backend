@@ -131,7 +131,7 @@ export class StudioSessionsService {
         'user_clients.nickname',
       ])
       .getMany();
-
+    
     return sessions;
   }
 
